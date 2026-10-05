@@ -2,9 +2,18 @@
 
 # Class to send manual commands using the terminal
 # Helps organize all car commands to control Leaf
+
+from manual_nissancan import CarController_Manual
+from manual_can_interface import CANInterface
+
 class Vehicle_Controls:
-    def __init__(self):
-        self.simulation = True #checks to see if in simulation to not run any actual commands
+    def __init__(self, dbc_name=None, simulation=True):
+        self.simulation = simulation
+
+        #builds Nissan CAN messages
+        self.nissan = CarController_Manual(dbc_name)
+        #Sends CAN to Nissan
+        self.can = CANInterface(simulation=simulation)
 
     def send_car_command(self, command, value):
         if self.simulation:
@@ -38,7 +47,7 @@ class Vehicle_Controls:
 
 # Main program
 if __name__ == "__main__":
-    car = Vehicle_Controls()
+    car = Vehicle_Controls(simulation=True)
 
     #Currently runs the commands but does not output CAN message to the car
     while True:
