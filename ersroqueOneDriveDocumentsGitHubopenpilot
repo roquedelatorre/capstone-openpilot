@@ -1,0 +1,140 @@
+[1mdiff --git a/capstone_26/manual_can_interface.py b/capstone_26/manual_can_interface.py[m
+[1mnew file mode 100644[m
+[1mindex 000000000..e69de29bb[m
+[1mdiff --git a/capstone_26/manual_nissancan.py b/capstone_26/manual_nissancan.py[m
+[1mnew file mode 100644[m
+[1mindex 000000000..40141606e[m
+[1m--- /dev/null[m
+[1m+++ b/capstone_26/manual_nissancan.py[m
+[36m@@ -0,0 +1,49 @@[m
+[32m+[m[32m#we will use this file to create manual our manual inputs rather[m
+[32m+[m[32m# than using nissancan.py, but we will use the same idea[m
+[32m+[m
+[32m+[m[32m#from opendbc.car.nissan.values import CAR[m
+[32m+[m[32mfrom opendbc.can import CANPacker[m
+[32m+[m[32m#from opendbc.car.interfaces import CarControllerBase[m
+[32m+[m[32m#from opendbc.car.nissan import nissancan[m
+[32m+[m[32m#from opendbc.car.nissan.values import CAR, CarControllerParams[m
+[32m+[m[32m#from opendbc.car.common.filter_simple import FirstOrderFilter[m
+[32m+[m
+[32m+[m[32m#This is the main class for organizing CAN messages[m
+[32m+[m
+[32m+[m[32mclass CarController_Manual():[m
+[32m+[m
+[32m+[m[32m  def __init__(self, dbc_name=None):    #Sends blank dbc until we send one[m
+[32m+[m
+[32m+[m[32m    #CANPacker will be initialized here when provided DBC name[m
+[32m+[m[32m    self.packer = None[m
+[32m+[m
+[32m+[m[32m    #Sends DBC into pre-made CAN packer[m
+[32m+[m[32m    if dbc_name is not None:[m
+[32m+[m[32m      self.packer = CANPacker(dbc_name)[m
+[32m+[m
+[32m+[m[32m     # can_sends = [][m
+[32m+[m[32m     # return can_sends[m
+[32m+[m
+[32m+[m[32m  # Hazard lights, only testing hazards for now[m
+[32m+[m[32m  def create_hazard_control(self, enabled):[m
+[32m+[m
+[32m+[m[32m      #Makes sure CANPacker is given DBC value[m
+[32m+[m[32m      if self.packer is None:[m
+[32m+[m[32m          raise RuntimeError("CANPacker not initialized")[m
+[32m+[m
+[32m+[m[32m      #Need these values from Cabana[m
+[32m+[m[32m      message_name = None[m
+[32m+[m[32m      bus = None[m
+[32m+[m[32m      #From cabana[m
+[32m+[m[32m      values = {}[m
+[32m+[m
+[32m+[m[32m      #Adding some safety checks[m
+[32m+[m[32m      if message_name is None or bus is None:[m
+[32m+[m[32m        raise NotImplementedError([m
+[32m+[m[32m          "Hazard CAN message not identified"[m
+[32m+[m[32m      )[m
+[32m+[m
+[32m+[m[32m      #Now validated, create actual signals[m
+[32m+[m[32m      return self.packer.make_can_msg(message_name, bus, values)[m
+[32m+[m
+[32m+[m
+[1mdiff --git a/capstone_26/manualcar_testscript.py b/capstone_26/manualcar_testscript.py[m
+[1mnew file mode 100644[m
+[1mindex 000000000..e69de29bb[m
+[1mdiff --git a/capstone_26/vehicle_control.py b/capstone_26/vehicle_control.py[m
+[1mnew file mode 100644[m
+[1mindex 000000000..b640c4116[m
+[1m--- /dev/null[m
+[1m+++ b/capstone_26/vehicle_control.py[m
+[36m@@ -0,0 +1,73 @@[m
+[32m+[m[32m# Used to send car controls manually[m
+[32m+[m
+[32m+[m[32m# Class to send manual commands using the terminal[m
+[32m+[m[32m# Helps organize all car commands to control Leaf[m
+[32m+[m[32mclass Vehicle_Controls:[m
+[32m+[m[32m    def __init__(self):[m
+[32m+[m[32m        self.simulation = True #checks to see if in simulation to not run any actual commands[m
+[32m+[m
+[32m+[m[32m    def send_car_command(self, command, value):[m
+[32m+[m[32m        if self.simulation:[m
+[32m+[m[32m            print(f"SIMULATION: {command} = {value}")[m
+[32m+[m[32m            return[m
+[32m+[m
+[32m+[m[32m        #error function incase command does not exist[m
+[32m+[m[32m        raise NotImplementedError([m
+[32m+[m[32m            "CAN command not created"[m
+[32m+[m[32m        )[m
+[32m+[m
+[32m+[m[32m    #list of commands we want to control[m
+[32m+[m[32m    def hazards_ON(self):[m
+[32m+[m[32m        self.send_car_command("hazards", "ON")[m
+[32m+[m
+[32m+[m[32m    def hazards_OFF(self):[m
+[32m+[m[32m        self.send_car_command("hazards", "OFF")[m
+[32m+[m
+[32m+[m[32m    def AC_ON(self):[m
+[32m+[m[32m        self.send_car_command("AC", "ON")[m
+[32m+[m
+[32m+[m[32m    def AC_OFF(self):[m
+[32m+[m[32m        self.send_car_command("AC", "OFF")[m
+[32m+[m
+[32m+[m[32m    def set_temp(self, temperature):[m
+[32m+[m[32m        if not 16 <= temperature <= 30:[m
+[32m+[m[32m            raise ValueError("Temperature outside range")[m
+[32m+[m
+[32m+[m[32m        self.send_car_command("temperature", temperature)[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# Main program[m
+[32m+[m[32mif __name__ == "__main__":[m
+[32m+[m[32m    car = Vehicle_Controls()[m
+[32m+[m
+[32m+[m[32m    #Currently runs the commands but does not output CAN message to the car[m
+[32m+[m[32m    while True:[m
+[32m+[m[32m        command = input("Enter command: ").strip().lower()[m
+[32m+[m
+[32m+[m[32m        if command == "hazards_on":[m
+[32m+[m[32m            car.hazards_ON()[m
+[32m+[m
+[32m+[m[32m        elif command == "hazards_off":[m
+[32m+[m[32m            car.hazards_OFF()[m
+[32m+[m
+[32m+[m[32m        elif command == "ac_on":[m
+[32m+[m[32m            car.AC_ON()[m
+[32m+[m
+[32m+[m[32m        elif command == "ac_off":[m
+[32m+[m[32m            car.AC_OFF()[m
+[32m+[m
+[32m+[m[32m        #Allows user to unput a certain temperature to car[m
+[32m+[m[32m        elif command == "set_temp":[m
+[32m+[m[32m            try:[m
+[32m+[m[32m                temperature = float([m
+[32m+[m[32m                    input("Enter temperature: ")[m
+[32m+[m[32m                )[m
+[32m+[m[32m                car.set_temp(temperature)[m
+[32m+[m[32m            except ValueError as error:[m
+[32m+[m[32m                print(error)[m
+[32m+[m
+[32m+[m[32m        elif command == "exit":[m
+[32m+[m[32m            break[m
+[32m+[m
+[32m+[m[32m        else:[m
+[32m+[m[32m            print("Unknown command")[m
