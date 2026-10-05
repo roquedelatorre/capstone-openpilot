@@ -16,14 +16,26 @@ class Vehicle_Controls:
         self.can = CANInterface(simulation=simulation)
 
     def send_car_command(self, command, value):
-        if self.simulation:
-            print(f"SIMULATION: {command} = {value}")
-            return
+        # CHANGED - this used to just print, so self.nissan and self.can were
+        # never used. Now it builds the message then sends it.
+        if command == "hazards":
+            message = self.nissan.create_hazard_control(value == "ON")
 
-        #error function incase command does not exist
-        raise NotImplementedError(
-            "CAN command not created"
-        )
+        # ADDED - steering goes through the LKAS builder
+        elif command == "steer":
+            message = self.nissan.create_steering_control(value, lka_active=True)
+
+        elif command == "steer_off":
+            # same message with LKA off, angle held at 0
+            message = self.nissan.create_steering_control(0.0, lka_active=False)
+
+        else:
+            #error function incase command does not exist
+            raise NotImplementedError(
+                f"CAN command not created: {command}"
+            )
+
+        self.can.send(message)
 
     #list of commands we want to control
     def hazards_ON(self):
@@ -31,6 +43,16 @@ class Vehicle_Controls:
 
     def hazards_OFF(self):
         self.send_car_command("hazards", "OFF")
+
+    # ADDED - steering, range checked the same way set_temp is
+    def steer(self, angle_deg):
+        if not -600 <= angle_deg <= 600:
+            raise ValueError("Steering angle outside range")
+
+        self.send_car_command("steer", angle_deg)
+
+    def steer_off(self):
+        self.send_car_command("steer_off", None)
 
     def AC_ON(self):
         self.send_car_command("AC", "ON")
@@ -45,38 +67,5 @@ class Vehicle_Controls:
         self.send_car_command("temperature", temperature)
 
 
-# Main program
-if __name__ == "__main__":
-    car = Vehicle_Controls(simulation=True)
-
-    #Currently runs the commands but does not output CAN message to the car
-    while True:
-        command = input("Enter command: ").strip().lower()
-
-        if command == "hazards_on":
-            car.hazards_ON()
-
-        elif command == "hazards_off":
-            car.hazards_OFF()
-
-        elif command == "ac_on":
-            car.AC_ON()
-
-        elif command == "ac_off":
-            car.AC_OFF()
-
-        #Allows user to unput a certain temperature to car
-        elif command == "set_temp":
-            try:
-                temperature = float(
-                    input("Enter temperature: ")
-                )
-                car.set_temp(temperature)
-            except ValueError as error:
-                print(error)
-
-        elif command == "exit":
-            break
-
-        else:
-            print("Unknown command")
+# REMOVED - the input loop that was here. The test script already has one
+# and they used different command names.
