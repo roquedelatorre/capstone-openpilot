@@ -54,7 +54,8 @@ class CarController_Manual():
     values[checksum_field] = 0
 
     # pack 1 - checksum still zero
-    _, first_pass = self.packer.make_can_msg(message_name, bus, values)
+    first_msg = self.packer.make_can_msg(message_name, bus, values)
+    first_pass = first_msg[1]
 
     # checksum covers bytes 0-6, goes in byte 7
     values[checksum_field] = nissan_checksum(first_pass[:7])
@@ -96,19 +97,22 @@ class CarController_Manual():
       self._require_packer()   # CHANGED - was an inline if
 
       #Need these values from Cabana
-      message_name = None
-      bus = None
+      message_name = "HAZARD_SWITCH"
+      bus = 0
+
       #From cabana
       # TODO: put the hazard signal here and set it from `enabled`
-      values = {}
+      values = {"HAZARD_BUTTON": 1 if enabled else 0}
 
       #Adding some safety checks
       if message_name is None or bus is None:
         raise NotImplementedError(
           "Hazard CAN message not identified"
-      )
+        )
+
 
       #Now validated, create actual signals
       # NOTE - if this message has COUNTER and CHECKSUM, use
       # make_checksummed_msg instead
+
       return self.packer.make_can_msg(message_name, bus, values)
