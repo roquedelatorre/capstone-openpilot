@@ -1,7 +1,10 @@
 # Simple script to write to the car and test functions
 from vehicle_control import Vehicle_Controls
 
-car = Vehicle_Controls(simulation=True)
+car = Vehicle_Controls(
+  dbc_name = "nissan_leaf_2018_generated",
+  simulation=True
+  )
 
 
 def main_test():
@@ -68,10 +71,11 @@ def main_test():
       if steering_command == "1":
         try:
           angle = float(input("Angle in degrees: "))
-          car.steer(angle)
-
         except ValueError:
           print("Invalid angle")
+          continue
+
+        car.steer(angle)
 
       elif steering_command == "2":
         car.steer_off()
