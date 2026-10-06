@@ -28,16 +28,16 @@ def main_test():
     if command == "1":
 
       print("\nHazard Control")
-      print("1. Hazards ON")
-      print("2. Hazards OFF")
+      print("1. Press Hazards")
+      print("2. Release Hazards")
 
       hazard_command = input("Enter command: ").strip()
 
       if hazard_command == "1":
-        car.hazards_ON()
+        car.hazards_press()
 
       elif hazard_command == "2":
-        car.hazards_OFF()
+        car.hazards_release()
 
       else:
         print("Command not found")
