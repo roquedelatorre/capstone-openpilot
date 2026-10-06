@@ -17,8 +17,9 @@ def main_test():
     print("2. AC")
     print("3. Steering")
     print("4. Windshield Wiper")
-    print("5. Show sent messages")
-    print("6. Exit")
+    print("5. Blinkers")              # ADDED (Saul)
+    print("6. Show sent messages")
+    print("7. Exit")
 
     #Command will be sent here
     command = input("Enter command: ").strip()
@@ -30,6 +31,8 @@ def main_test():
       print("\nHazard Control")
       print("1. Press Hazards")
       print("2. Release Hazards")
+      print("3. Hazards ON (via 634)")    # ADDED (Saul)
+      print("4. Hazards OFF (via 634)")   # ADDED (Saul)
 
       hazard_command = input("Enter command: ").strip()
 
@@ -38,6 +41,12 @@ def main_test():
 
       elif hazard_command == "2":
         car.hazards_release()
+
+      elif hazard_command == "3":         # ADDED (Saul)
+        car.hazards_27a_ON()
+
+      elif hazard_command == "4":         # ADDED (Saul)
+        car.hazards_27a_OFF()
 
       else:
         print("Command not found")
@@ -100,13 +109,37 @@ def main_test():
       #   car.wipers_OFF()
 
 
-    # Car-long menu
+    # Blinker sub-menu
+    # ADDED (Saul) - 634 carries the actual lamp state
     elif command == "5":
+
+      print("\nBlinker Control")
+      print("1. Left")
+      print("2. Right")
+      print("3. Off")
+
+      blinker_command = input("Enter command: ").strip()
+
+      if blinker_command == "1":
+        car.blinker_left()
+
+      elif blinker_command == "2":
+        car.blinker_right()
+
+      elif blinker_command == "3":
+        car.blinkers_off()
+
+      else:
+        print("Command not found")
+
+
+    # Car-long menu
+    elif command == "6":
       car.can.print_log()
 
 
     # Exit
-    elif command == "6":
+    elif command == "7":
       print("Exiting manual vehicle control.")
       break
 
