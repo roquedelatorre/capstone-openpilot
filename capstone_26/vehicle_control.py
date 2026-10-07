@@ -22,6 +22,24 @@ class Vehicle_Controls:
     def hazards_release(self):
         self.send_car_command("hazards_release", None)
 
+    # ADDED (Saul) - blinkers through 634
+    def blinker_left(self):
+        self.send_car_command("blinker_left", None)
+
+    def blinker_right(self):
+        self.send_car_command("blinker_right", None)
+
+    def blinkers_off(self):
+        self.send_car_command("blinkers_off", None)
+
+    # ADDED (Saul) - both blinker bits on at once is how the car shows
+    # hazards, second way to try hazards if the 943 button does nothing
+    def hazards_27a_ON(self):
+        self.send_car_command("hazards_27a_ON", None)
+
+    def hazards_27a_OFF(self):
+        self.send_car_command("hazards_27a_OFF", None)
+
     # ADDED - steering, range checked the same way set_temp is
     def steer(self, angle_deg):
         if not -600 <= angle_deg <= 600:
@@ -52,6 +70,22 @@ class Vehicle_Controls:
             message = self.nissan.create_hazard_control(True)
         elif command == "hazards_release":
             message = self.nissan.create_hazard_control(False)
+
+        # ADDED (Saul) - turn signals on 634
+        elif command == "blinker_left":
+            message = self.nissan.create_turn_signal_control(True, False)
+
+        elif command == "blinker_right":
+            message = self.nissan.create_turn_signal_control(False, True)
+
+        elif command == "blinkers_off":
+            message = self.nissan.create_turn_signal_control(False, False)
+
+        elif command == "hazards_27a_ON":
+            message = self.nissan.create_turn_signal_control(True, True)
+
+        elif command == "hazards_27a_OFF":
+            message = self.nissan.create_turn_signal_control(False, False)
 
         # ADDED - steering goes through the LKAS builder
         elif command == "steer":

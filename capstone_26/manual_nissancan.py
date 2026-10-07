@@ -68,6 +68,35 @@ class CarController_Manual():
 
     return msg
 
+  # ADDED (Saul) - checksum for 634, plain byte sum not CRC8/J1850,
+  # so make_checksummed_msg does not work for this message
+  def sum_checksum_27a(self, data):
+    return (sum(data[1:7]) + 0x7C) & 0xFF
+
+  # ADDED (Saul) - turn signals and hazards on 634, which carries the
+  # actual lamp state
+  def create_turn_signal_control(self, left, right):
+
+    self._require_packer()
+
+    values = {
+      "LEFT_BLINKER_27A": 1 if left else 0,
+      "RIGHT_BLINKER_27A": 1 if right else 0,
+      "COUNTER_27A": self.counter,
+      "CHECKSUM_27A": 0,
+    }
+
+    # pack 1 - checksum still zero
+    first_msg = self.packer.make_can_msg("TURN_SIGNALS_27A", 0, values)
+    values["CHECKSUM_27A"] = self.sum_checksum_27a(first_msg[1])
+
+    # pack 2 - real checksum
+    msg = self.packer.make_can_msg("TURN_SIGNALS_27A", 0, values)
+
+    self.counter = (self.counter + 1) % 0x10
+
+    return msg
+
   # ADDED - LKAS steering message, ID 0x169
   # Fields come from the 2018 Leaf DBC. Still has to be confirmed on our 2025.
   # The packer handles the raw encoding, so DESIRED_ANGLE is in degrees.
