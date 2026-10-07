@@ -76,8 +76,28 @@ CM_ BO_ 634 "Observed turn-signal state message. Byte 4 bit 0 = left, byte 4 bit
 
 CM_ SG_ 634 COUNTER_27A "4-bit rolling counter observed in byte 6 low nibble. Sequence 0 through 15, then wraps to 0.";
 
-CM_ SG_ 634 CHECKSUM_27A "Observed checksum byte. From captured data: checksum = (Byte1 + Byte2 + Byte3 + Byte4 + Byte5 + Byte6 + 0x7C) & 0xFF.";
+CM_ SG_ 634 CHECKSUM_27A "Confirmed 8-bit additive checksum. Sum CAN ID bytes 0x02 and 0x7A plus data bytes 1 through 6, then keep the low 8 bits. Equivalent to (Byte1 + Byte2 + Byte3 + Byte4 + Byte5 + Byte6 + 0x7C) & 0xFF.";
 
 CM_ BO_ 943 "Observed hazard-switch press message. Byte 1 bit 7 pulses when the physical hazard button is pressed; same pulse occurs for hazard ON and OFF.";
 
 CM_ BO_ 1549 "Existing doors message also contains turn-signal state. Byte 2 bit 5 = left, byte 2 bit 6 = right. Both active = hazard. No rolling counter or obvious checksum observed.";
+
+CM_ BO_ 2 "Imported from _nissan_common.dbc. Our vehicle capture confirmed steering-angle behavior, steering-rate behavior, fixed 0x07 field, approximately 100 Hz transmission, and 4-bit rolling counter. No checksum is defined for this message.";
+
+CM_ SG_ 2 STEER_ANGLE "Known Nissan definition: signed little-endian steering angle with 0.1 degree per count scaling. Our physical steering test confirmed that this field tracks steering-wheel position.";
+
+CM_ SG_ 2 STEER_ANGLE_RATE "Known Nissan definition: steering-angle rate raw field. Our slow-versus-fast steering test confirmed that this field increases with steering speed and returns near zero when held.";
+
+CM_ SG_ 2 COUNTER "Confirmed 4-bit rolling counter. Sequence 0 through 15, then wraps to 0.";
+
+CM_ BO_ 361 "Imported from _nissan_common.dbc. Known Nissan LKAS steering-control message. Our capture confirmed approximately 100 Hz transmission, fixed 0x80 fields, 4-bit rolling counter, and CRC-8/SAE-J1850 checksum. DESIRED_ANGLE, MAX_TORQUE, and LKA_ACTIVE meanings come from the established Nissan definition and were not independently proven by the stationary receive-only test.";
+
+CM_ SG_ 361 CHECKSUM "Confirmed CRC-8/SAE-J1850 over data bytes 1 through 7: polynomial 0x1D, initial value 0xFF, final XOR 0xFF. Checksum stored in byte 8. Verified across both captured buses.";
+
+CM_ SG_ 361 COUNTER "Confirmed 4-bit rolling counter. Sequence 0 through 15, then wraps to 0.";
+
+CM_ BO_ 389 "Imported from _nissan_common.dbc. Our capture supports separate driver-torque and steering-angle behavior. Exact Nm and degree scaling is inherited from the established Nissan definition. Counter and checksum were directly verified from captured data.";
+
+CM_ SG_ 389 COUNTER "Confirmed 4-bit rolling counter. Sequence 0 through 15, then wraps to 0.";
+
+CM_ SG_ 389 CHECKSUM "Confirmed CRC-8/SAE-J1850 over data bytes 1 through 7: polynomial 0x1D, initial value 0xFF, final XOR 0xFF. Checksum stored in byte 8.";
