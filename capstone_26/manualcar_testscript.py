@@ -19,7 +19,8 @@ def main_test():
     print("4. Windshield Wiper")
     print("5. Blinkers")              # ADDED (Saul)
     print("6. Show sent messages")
-    print("7. Exit")
+    print("7. Export frames as C")    # ADDED (Saul)
+    print("8. Exit")
 
     #Command will be sent here
     command = input("Enter command: ").strip()
@@ -138,8 +139,13 @@ def main_test():
       car.can.print_log()
 
 
-    # Exit
+    # ADDED (Saul) - C output for the ESP32
     elif command == "7":
+      car.can.export_c()
+
+
+    # Exit
+    elif command == "8":
       print("Exiting manual vehicle control.")
       break
 
