@@ -1,10 +1,16 @@
 #This script actually sends the CAN messages
 #pulls the messages from manual_nissancan
 
+from panda import Panda
 class CANInterface:
 
     def __init__(self, simulation=True):
         self.simulation = simulation
+
+        self.panda = None  #only connect when actually using Panda
+
+        if not self.simulation:
+            self.panda = Panda()
 
         # ADDED - keeps every frame we tried to send so we can check
         # the bytes after a test run instead of scrolling the terminal
@@ -15,7 +21,12 @@ class CANInterface:
     def format_msg(self, message):
         addr, data, bus = message
         hex_bytes = " ".join(f"{b:02X}" for b in data)
-        return f"bus {bus}  ID 0x{addr:03X}  [{len(data)}]  {hex_bytes}"
+        return (
+            f"bus {bus}  "
+            f"ID 0x{addr:03X}  "
+            f"[{len(data)}]  "
+            f"{hex_bytes}"
+        )
 
     def send(self, message):
         if message is None:
@@ -23,16 +34,20 @@ class CANInterface:
 
         self.sent_log.append(message)   # ADDED
 
+
+        #In simulation mode
         if self.simulation:
             print("Simulation CAN message: ")
             print(self.format_msg(message))   # CHANGED - was print(message)
             return
 
         # ADDED - real hardware path
-        # Without this, a non-simulation send did nothing and gave no error
-        raise NotImplementedError(
-            "Hardware CAN send not implemented yet. Keep simulation=True."
-        )
+        addr, dat, bus = message
+
+        print("Sending CAN message")
+        print(self.format_msg(message))
+
+        self.panda.can_send(addr, dat, bus)
 
     # ADDED - dump everything sent this run
     def print_log(self):
