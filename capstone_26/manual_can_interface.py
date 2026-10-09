@@ -41,3 +41,17 @@ class CANInterface:
             return
         for i, message in enumerate(self.sent_log):
             print(f"{i}: {self.format_msg(message)}")
+
+    # ADDED (Saul) - export sent frames as C arrays for the ESP32
+    # Python is just the prototype. This gives us the exact bytes to
+    # hard-code on the board instead of retyping them by hand.
+    def export_c(self):
+        if not self.sent_log:
+            print("No messages sent")
+            return
+
+        for i, message in enumerate(self.sent_log):
+            addr, data, bus = message
+            byte_list = ", ".join(f"0x{b:02X}" for b in data)
+            print(f"// frame {i}  ID 0x{addr:03X}  bus {bus}")
+            print(f"uint8_t frame{i}[{len(data)}] = {{{byte_list}}};")
