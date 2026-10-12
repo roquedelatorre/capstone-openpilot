@@ -54,6 +54,7 @@ BO_ 569 CRUISE_THROTTLE: 8 XXX
  SG_ unsure7 : 63|8@0+ (1,0) [0|255] "" XXX
 
 BO_ 634 TURN_SIGNALS_27A: 7 XXX
+ SG_ SET_0x4D : 23|8@0+ (1,0) [0|255] "" XXX
  SG_ LEFT_BLINKER_27A : 24|1@0+ (1,0) [0|1] "" XXX
  SG_ RIGHT_BLINKER_27A : 25|1@0+ (1,0) [0|1] "" XXX
  SG_ COUNTER_27A : 43|4@0+ (1,0) [0|15] "" XXX
@@ -115,12 +116,14 @@ CM_ SG_ 389 COUNTER "Confirmed 4-bit rolling counter. Sequence 0 through 15 then
 
 CM_ SG_ 389 CHECKSUM "Confirmed CRC-8/SAE-J1850 over data bytes 1 through 7. Polynomial 0x1D, initial value 0xFF, final XOR 0xFF. Checksum stored in byte 8.";
 
-CM_ BO_ 634 "Observed turn-signal state message. Byte 4 bit 0 = left, byte 4 bit 1 = right. Both active = hazard. Message observed at approximately 50 Hz and stops when vehicle is off.";
+CM_ BO_ 634 "Observed turn-signal state message. Byte 4 bit 0 = left, byte 4 bit 1 = right. Both active = hazard. Message observed at approximately 50 Hz and stops when vehicle is off. Captured on BUS 2 at 47.5 Hz over 50432 frames. REPORTS lamp state rather than commanding it: byte 4 toggles with the physical flash at about 1.43 Hz, and every sustained hazard period begins 20-30 ms AFTER a 0x3AF pulse. Transmitting this message is not expected to command the lamps.";
+
+CM_ SG_ 634 SET_0x4D "Constant 0x4D across all 50432 captured frames. Was missing from this DBC, so frames we packed had 0x00 here and did not match what the car sends. Must be set on transmit.";
 
 CM_ SG_ 634 COUNTER_27A "Confirmed 4-bit rolling counter in byte 6 low nibble. Sequence 0 through 15 then wraps to 0.";
 
 CM_ SG_ 634 CHECKSUM_27A "Confirmed additive checksum. Checksum = (Byte1 + Byte2 + Byte3 + Byte4 + Byte5 + Byte6 + 0x7C) & 0xFF.";
 
-CM_ BO_ 943 "Observed hazard-switch press message. Byte 1 bit 7 pulses when the physical hazard button is pressed. Same pulse occurs for hazard ON and hazard OFF.";
+CM_ BO_ 943 "Observed hazard-switch press message. Byte 1 bit 7 pulses when the physical hazard button is pressed. Same pulse occurs for hazard ON and hazard OFF. Captured on BUS 0 at 10.1 Hz; bytes 2-8 constant 0x00, no counter and no checksum. 110 pulses observed, width 0.131 s min / 0.250 s median / 0.560 s max, so a press is roughly 2-3 frames at 10 Hz. This is the COMMAND side of the hazard function: all 35 sustained hazard periods in 0x27A began 20-30 ms after a pulse here.";
 
-CM_ BO_ 1549 "Door-status message also contains turn-signal state. Byte 2 bit 5 = left, byte 2 bit 6 = right. Both active = hazard. No obvious rolling counter or checksum observed.";
+CM_ BO_ 1549 "Door-status message also contains turn-signal state. Byte 2 bit 5 = left, byte 2 bit 6 = right. Both active = hazard. No obvious rolling counter or checksum observed. Captured on BUS 0 at 10.3 Hz. Byte 2 toggles 0x06 <-> 0x66 in lockstep with the 0x27A flash, which confirms bits 5 and 6 as the two blinker lamps (0x20 | 0x40 = 0x60). Byte 1 went 0x98 -> 0x90 -> 0x80 early in the capture, consistent with the two front doors being closed one after the other, which supports the DOOR_OPEN_FL/FR bit assignments. Like 0x27A this message REPORTS lamp state.";
