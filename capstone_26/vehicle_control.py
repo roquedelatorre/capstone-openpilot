@@ -3,11 +3,22 @@
 # Class to send manual commands using the terminal
 # Helps organize all car commands to control Leaf
 
-from manual_nissancan import CarController_Manual
+import time
+
+from manual_nissancan import (CarController_Manual, MAX_ANGLE,
+                              HAZARD_PULSE_S, HAZARD_RATE_HZ)
 from manual_can_interface import CANInterface
+from manual_tx_loop import (PeriodicTransmitter, SteeringHold, BlinkerHold,
+                            NoticeQueue)
+
+# Rates openpilot / our captures use. 0x169 is ~100 Hz, 0x27A is ~50 Hz.
+LKAS_RATE_HZ = 100.0
+TURN_SIGNAL_RATE_HZ = 50.0
+
 
 class Vehicle_Controls:
-    def __init__(self, dbc_name=None, simulation=True):
+    def __init__(self, dbc_name=None, simulation=True, verbose_tx=False,
+                 hold_timeout_s=None):
         self.simulation = simulation
 
         #builds Nissan CAN messages
@@ -15,90 +26,157 @@ class Vehicle_Controls:
         #Sends CAN to Nissan
         self.can = CANInterface(simulation=simulation)
 
-    #list of commands we want to control
-    def hazards_press(self):
-        self.send_car_command("hazards_press", None)
+        # ADDED - the tx thread must not write to stdout while the menu is in
+        # input(), so everything it wants to say goes here and the caller
+        # prints it when the terminal is free.
+        self.notices = NoticeQueue()
 
-    def hazards_release(self):
-        self.send_car_command("hazards_release", None)
+        # ADDED - anything that holds a state has to be streamed, not sent
+        # once. See manual_tx_loop.py for why.
+        self.tx = PeriodicTransmitter(self.can, base_rate_hz=LKAS_RATE_HZ,
+                                      verbose=verbose_tx, notices=self.notices)
+        self.steering = SteeringHold(self.nissan, rate_hz=LKAS_RATE_HZ,
+                                     timeout_s=hold_timeout_s,
+                                     notices=self.notices)
+        self.blinkers = BlinkerHold(self.nissan)
 
-    # ADDED (Saul) - blinkers through 634
-    def blinker_left(self):
-        self.send_car_command("blinker_left", None)
+    # ADDED - call this whenever the terminal is idle and safe to write to
+    def print_notices(self):
+        self.notices.print_all()
 
-    def blinker_right(self):
-        self.send_car_command("blinker_right", None)
+    # ---------------- lifecycle ----------------
 
-    def blinkers_off(self):
-        self.send_car_command("blinkers_off", None)
+    def start(self):
+        self.tx.start()
 
-    # ADDED (Saul) - both blinker bits on at once is how the car shows
-    # hazards, second way to try hazards if the 943 button does nothing
-    def hazards_27a_ON(self):
-        self.send_car_command("hazards_27a_ON", None)
+    def stop(self):
+        """Release everything, then stop transmitting. Always call this."""
+        self.steering.release()
+        self.blinkers.set(False, False)
+        self.tx.stop()
 
-    def hazards_27a_OFF(self):
-        self.send_car_command("hazards_27a_OFF", None)
+    def __enter__(self):
+        self.start()
+        return self
 
-    # ADDED - steering, range checked the same way set_temp is
+    def __exit__(self, *exc):
+        self.stop()
+        return False
+
+    # ---------------- steering (streamed) ----------------
+
     def steer(self, angle_deg):
-        if not -600 <= angle_deg <= 600:
-            raise ValueError("Steering angle outside range")
+        if not -MAX_ANGLE <= angle_deg <= MAX_ANGLE:
+            raise ValueError(f"Steering angle outside +/-{MAX_ANGLE} degrees")
 
-        self.send_car_command("steer", angle_deg)
+        self.steering.engage(angle_deg)
+        # register once; the transmitter rebuilds the frame every tick so the
+        # counter and checksum stay valid
+        self.tx.set("LKAS", self.steering.build, rate_hz=LKAS_RATE_HZ)
 
     def steer_off(self):
-        self.send_car_command("steer_off", None)
+        # keep streaming with LKA_ACTIVE clear so the EPS sees a clean
+        # handover instead of the stream just vanishing
+        self.steering.release()
+        self.tx.set("LKAS", self.steering.build, rate_hz=LKAS_RATE_HZ)
+
+    def steer_stop_sending(self):
+        self.steering.release()
+        self.tx.clear("LKAS")
+
+    # ADDED - push the deadman out without re-typing the angle
+    def steer_refresh(self):
+        return self.steering.refresh()
+
+    # ---------------- blinkers (streamed) ----------------
+
+    def blinker_left(self):
+        self._set_blinkers(True, False)
+
+    def blinker_right(self):
+        self._set_blinkers(False, True)
+
+    def blinkers_off(self):
+        self._set_blinkers(False, False)
+
+    # ADDED (Saul) - both blinker bits on at once is how the car shows
+    # hazards, second way to try hazards if the 0x3AF button does nothing
+    def hazards_27a_ON(self):
+        self._set_blinkers(True, True)
+
+    def hazards_27a_OFF(self):
+        self._set_blinkers(False, False)
+
+    def _set_blinkers(self, left, right):
+        self.blinkers.set(left, right)
+        self.tx.set("TURN_SIGNALS_27A", self.blinkers.build,
+                    rate_hz=TURN_SIGNAL_RATE_HZ)
+
+    # ---------------- hazards (one-shot, it is a button) ----------------
+
+    # CHANGED - a single frame is not a button press. Real presses in our
+    # capture are 0.131-0.560 s wide (median 0.250 s) on a message that runs
+    # at 10 Hz, so a press is 2-3 consecutive frames with bit 7 set. One
+    # frame among the BCM's own stream of zeros is very unlikely to register.
+    def hazard_pulse(self, duration_s=None, rate_hz=None):
+        """Emulate one hazard button press, then return to released."""
+        duration_s = HAZARD_PULSE_S if duration_s is None else duration_s
+        rate_hz = HAZARD_RATE_HZ if rate_hz is None else rate_hz
+
+        pressed = [True]
+
+        def build():
+            return self.nissan.create_hazard_control(pressed[0])
+
+        self.tx.set("HAZARD_SWITCH", build, rate_hz=rate_hz)
+        if not self.tx.running:
+            self.tx.start()
+
+        time.sleep(duration_s)
+        pressed[0] = False
+        # hold the released state briefly so the last frames the BCM sees
+        # from us are "not pressed"
+        time.sleep(max(0.1, 2.0 / rate_hz))
+        self.tx.clear("HAZARD_SWITCH")
+
+        return duration_s
+
+    # kept for compatibility, but prefer hazard_pulse
+    def hazards_press(self):
+        self.can.send(self.nissan.create_hazard_control(True))
+
+    def hazards_release(self):
+        self.can.send(self.nissan.create_hazard_control(False))
+
+    # ---------------- not yet reverse engineered ----------------
+
+    # CHANGED - these used to dispatch command strings that send_car_command
+    # had no branch for, so they raised from deep inside the dispatcher. Now
+    # they say what is actually missing.
 
     def AC_ON(self):
-        self.send_car_command("AC", "ON")
+        raise NotImplementedError(
+            "A/C message not identified yet. Capture the climate bus in Cabana "
+            "while pressing A/C, add the message to nissan_leaf_2025_capstone.dbc, "
+            "then add a builder in manual_nissancan.py."
+        )
 
-    def AC_OFF(self):
-        self.send_car_command("AC", "OFF")
+    AC_OFF = AC_ON
 
     def set_temp(self, temperature):
         if not 16 <= temperature <= 30:
             raise ValueError("Temperature outside range")
+        raise NotImplementedError("Climate setpoint message not identified yet.")
 
-        self.send_car_command("temperature", temperature)
+    def wipers_ON(self):
+        raise NotImplementedError("Wiper message not identified yet.")
 
+    wipers_OFF = wipers_ON
 
-    def send_car_command(self, command, value):
-        # CHANGED - this used to just print, so self.nissan and self.can were
-        # never used. Now it builds the message then sends it.
-        if command == "hazards_press":
-            message = self.nissan.create_hazard_control(True)
-        elif command == "hazards_release":
-            message = self.nissan.create_hazard_control(False)
+    # ---------------- status ----------------
 
-        # ADDED (Saul) - turn signals on 634
-        elif command == "blinker_left":
-            message = self.nissan.create_turn_signal_control(True, False)
-
-        elif command == "blinker_right":
-            message = self.nissan.create_turn_signal_control(False, True)
-
-        elif command == "blinkers_off":
-            message = self.nissan.create_turn_signal_control(False, False)
-
-        elif command == "hazards_27a_ON":
-            message = self.nissan.create_turn_signal_control(True, True)
-
-        elif command == "hazards_27a_OFF":
-            message = self.nissan.create_turn_signal_control(False, False)
-
-        # ADDED - steering goes through the LKAS builder
-        elif command == "steer":
-            message = self.nissan.create_steering_control(value, lka_active=True)
-
-        elif command == "steer_off":
-            # same message with LKA off, angle held at 0
-            message = self.nissan.create_steering_control(0.0, lka_active=False)
-
-        else:
-            #error function incase command does not exist
-            raise NotImplementedError(
-                f"CAN command not created: {command}"
-            )
-
-        self.can.send(message)
+    def print_status(self):
+        print(f"mode:     {'SIMULATION' if self.simulation else 'HARDWARE'}")
+        print(f"steering: {self.steering.status()}")
+        print(f"blinkers: {self.blinkers.status()}")
+        self.tx.print_stats()
