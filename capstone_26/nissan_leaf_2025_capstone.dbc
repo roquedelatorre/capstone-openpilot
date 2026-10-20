@@ -1,46 +1,77 @@
-CM_ "Nissan Leaf receive-side DBC for Cabana. Includes locally defined steering, blinkers, hazards, doors, pedals, wheel speed, gearbox, and related signals.";
+VERSION "Nissan Leaf 2018 combined DBC"
+
+NS_ :
+ NS_DESC_
+ CM_
+ BA_DEF_
+ BA_
+ VAL_
+ CAT_DEF_
+ CAT_
+ FILTER
+ BA_DEF_DEF_
+ EV_DATA_
+ ENVVAR_DATA_
+ SGTYPE_
+ SGTYPE_VAL_
+ BA_DEF_SGTYPE_
+ BA_SGTYPE_
+ SIG_TYPE_REF_
+ VAL_TABLE_
+ SIG_GROUP_
+ SIG_VALTYPE_
+ SIGTYPE_VALTYPE_
+ BO_TX_BU_
+ BA_DEF_REL_
+ BA_REL_
+ BA_DEF_DEF_REL_
+ BU_SG_REL_
+ BU_EV_REL_
+ BU_BO_REL_
+ SG_MUL_VAL_
+
+BS_:
+BU_: XXX
 
 BO_ 2 STEER_ANGLE_SENSOR: 5 XXX
- SG_ STEER_ANGLE : 0|16@1- (-0.1,0) [-3276.7|3276.8] "deg" XXX
  SG_ STEER_ANGLE_RATE : 16|8@1+ (1,0) [0|255] "" XXX
  SG_ SET_ME_X07 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ STEER_ANGLE : 0|16@1- (-0.1,0) [-3276.7|3276.8] "deg" XXX
  SG_ COUNTER : 32|4@1+ (1,0) [0|15] "" XXX
 
 BO_ 42 SEATBELT: 8 XXX
- SG_ SEATBELT_DRIVER_LATCHED : 27|1@1+ (1,0) [0|3] "" XXX
+ SG_ SEATBELT_DRIVER_LATCHED : 27|1@1+ (1,0) [0|1] "" XXX
  SG_ SEATBELT_DRIVER_UNLATCHED : 26|1@0+ (1,0) [0|1] "" XXX
- SG_ unknown2 : 31|4@0+ (1,0) [0|15] "" XXX
- SG_ unknown3 : 24|2@1+ (1,0) [0|3] "" XXX
- SG_ unknown1 : 7|24@0+ (1,0) [0|16777215] "" XXX
- SG_ unknown4 : 39|16@0+ (1,0) [0|65535] "" XXX
 
 BO_ 361 LKAS: 8 XXX
- SG_ DESIRED_ANGLE : 7|18@0+ (-0.01,1310) [-1311.43|1310] "deg" XXX
- SG_ SET_0x80_2 : 31|8@0+ (1,0) [0|255] "" XXX
  SG_ MAX_TORQUE : 39|8@0+ (0.01,0) [0|2.55] "Nm" XXX
  SG_ SET_0x80 : 47|8@0+ (1,0) [0|255] "" XXX
- SG_ COUNTER : 51|4@0+ (1,0) [0|15] "" XXX
  SG_ LKA_ACTIVE : 52|1@0+ (1,0) [0|1] "" XXX
+ SG_ SET_0x80_2 : 31|8@0+ (1,0) [0|255] "" XXX
+ SG_ COUNTER : 51|4@0+ (1,0) [0|15] "" XXX
+ SG_ DESIRED_ANGLE : 7|18@0+ (-0.01,1310) [-1311.43|1310] "deg" XXX
  SG_ CHECKSUM : 63|8@0+ (1,0) [0|255] "" XXX
 
 BO_ 389 STEER_TORQUE_SENSOR: 8 XXX
- SG_ STEER_TORQUE_DRIVER : 7|12@0+ (-0.01,20.47) [-20.48|20.47] "Nm" XXX
- SG_ STEER_ANGLE : 23|18@0+ (-0.01,1310) [-1311.43|1310] "deg" XXX
  SG_ LKAS_ACTIVE : 37|1@0+ (1,0) [0|1] "" XXX
+ SG_ LKAS_STATUS : 55|4@0+ (1,0) [0|15] "" XXX
  SG_ STEER_TORQUE_LKAS : 47|8@0+ (1,0) [0|255] "" XXX
+ SG_ STEER_ANGLE : 23|18@0+ (-0.01,1310) [-1311.43|1310] "deg" XXX
+ SG_ STEER_TORQUE_DRIVER : 7|12@0+ (-0.01,20.47) [-20.48|20.47] "Nm" XXX
  SG_ COUNTER : 51|4@0+ (1,0) [0|15] "" XXX
  SG_ CHECKSUM : 63|8@0+ (1,0) [0|255] "" XXX
 
+BO_ 451 PROPILOT_BRAKE: 8 XXX
+ SG_ BRAKE_PRESSURE : 5|9@0+ (1,0) [0|511] "" XXX
+ SG_ BRAKE_ACTIVE : 47|1@0+ (1,0) [0|1] "" XXX
+
 BO_ 460 BRAKE_PEDAL: 8 XXX
- SG_ BRAKE_PEDAL : 7|8@0+ (1,0) [0|256] "" XXX
+ SG_ BRAKE_PEDAL : 7|8@0+ (1,0) [0|255] "" XXX
 
 BO_ 569 CRUISE_THROTTLE: 8 XXX
  SG_ GAS_PEDAL_INVERTED : 15|8@0+ (1,0) [0|255] "" XXX
  SG_ GAS_PEDAL : 7|8@0+ (1,0) [0|255] "" XXX
  SG_ CRUISE_AVAILABLE : 17|1@0+ (1,0) [0|1] "" XXX
- SG_ unsure1 : 23|6@0+ (1,0) [0|63] "" XXX
- SG_ unsure2 : 16|1@0+ (1,0) [0|1] "" XXX
- SG_ unsure3 : 31|2@0+ (1,0) [0|3] "" XXX
  SG_ NO_BUTTON_PRESSED : 29|1@0+ (1,0) [0|1] "" XXX
  SG_ RES_BUTTON : 28|1@0+ (1,0) [0|1] "" XXX
  SG_ SET_BUTTON : 27|1@0+ (1,0) [0|1] "" XXX
@@ -49,26 +80,53 @@ BO_ 569 CRUISE_THROTTLE: 8 XXX
  SG_ PROPILOT_BUTTON : 24|1@0+ (1,0) [0|1] "" XXX
  SG_ USER_BRAKE_PRESSED : 37|1@0+ (1,0) [0|1] "" XXX
  SG_ COUNTER : 32|2@1+ (1,0) [0|3] "" XXX
- SG_ unsure5 : 47|8@0+ (1,0) [0|255] "" XXX
- SG_ unsure6 : 55|8@0+ (1,0) [0|255] "" XXX
- SG_ unsure7 : 63|8@0+ (1,0) [0|255] "" XXX
 
 BO_ 634 TURN_SIGNALS_27A: 7 XXX
- SG_ SET_0x4D : 23|8@0+ (1,0) [0|255] "" XXX
- SG_ LEFT_BLINKER_27A : 24|1@0+ (1,0) [0|1] "" XXX
- SG_ RIGHT_BLINKER_27A : 25|1@0+ (1,0) [0|1] "" XXX
- SG_ COUNTER_27A : 43|4@0+ (1,0) [0|15] "" XXX
- SG_ CHECKSUM_27A : 55|8@0+ (1,0) [0|255] "" XXX
+ SG_ LEFT_BLINKER_27A : 24|1@1+ (1,0) [0|1] "" XXX
+ SG_ RIGHT_BLINKER_27A : 25|1@1+ (1,0) [0|1] "" XXX
+ SG_ COUNTER_27A : 40|4@1+ (1,0) [0|15] "" XXX
+ SG_ CHECKSUM_27A : 48|8@1+ (1,0) [0|255] "" XXX
 
 BO_ 640 CANCEL_MSG: 8 XXX
  SG_ CANCEL_SEATBELT : 1|1@0+ (1,0) [0|1] "" XXX
- SG_ NEW_SIGNAL_1 : 7|6@0+ (1,0) [0|63] "" XXX
- SG_ NEW_SIGNAL_2 : 0|1@0+ (1,0) [0|1] "" XXX
- SG_ NEW_SIGNAL_3 : 15|56@0+ (1,0) [0|72057594037927940] "" XXX
 
 BO_ 644 WHEEL_SPEEDS_FRONT: 8 XXX
- SG_ WHEEL_SPEED_FR : 7|16@0+ (0.005,0) [0|65535] "KPH" XXX
- SG_ WHEEL_SPEED_FL : 23|16@0+ (0.005,0) [0|65535] "KPH" XXX
+ SG_ WHEEL_SPEED_FR : 7|16@0+ (0.005,0) [0|327.675] "KPH" XXX
+ SG_ WHEEL_SPEED_FL : 23|16@0+ (0.005,0) [0|327.675] "KPH" XXX
+
+BO_ 645 WHEEL_SPEEDS_REAR: 8 XXX
+ SG_ WHEEL_SPEED_RR : 7|16@0+ (0.005,0) [0|327.675] "KPH" XXX
+ SG_ WHEEL_SPEED_RL : 23|16@0+ (0.005,0) [0|327.675] "KPH" XXX
+
+BO_ 658 ACCEL: 8 XXX
+ SG_ ROUGH_ACCEL : 7|16@0+ (0.0005,-16.5) [-16.5|16.27] "m/s^2" XXX
+
+BO_ 689 PROPILOT_HUD: 8 XXX
+ SG_ LARGE_WARNING_FLASHING : 9|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_RADAR_ERROR_FLASHING1 : 10|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_RADAR_ERROR_FLASHING2 : 11|1@0+ (1,0) [0|1] "" XXX
+ SG_ RIGHT_LANE_YELLOW_FLASH : 12|1@0+ (1,0) [0|1] "" XXX
+ SG_ LEFT_LANE_YELLOW_FLASH : 13|1@0+ (1,0) [0|1] "" XXX
+ SG_ LEAD_CAR : 14|1@0+ (1,0) [0|1] "" XXX
+ SG_ LEAD_CAR_ERROR : 15|1@0+ (1,0) [0|1] "" XXX
+ SG_ FRONT_RADAR_ERROR : 16|1@0+ (1,0) [0|1] "" XXX
+ SG_ FRONT_RADAR_ERROR_FLASHING : 17|1@0+ (1,0) [0|1] "" XXX
+ SG_ RIGHT_LANE_GREEN : 24|1@0+ (1,0) [0|1] "" XXX
+ SG_ LEFT_LANE_GREEN : 25|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_RADAR_ERROR_FLASHING3 : 27|1@0+ (1,0) [0|1] "" XXX
+ SG_ LKAS_ERROR_FLASHING : 29|1@0+ (1,0) [0|1] "" XXX
+ SG_ SAFETY_SHIELD_ACTIVE : 44|1@0+ (1,0) [0|1] "" XXX
+ SG_ LARGE_STEERING_WHEEL_ICON : 61|2@0+ (1,0) [0|3] "" XXX
+ SG_ RIGHT_LANE_GREEN_FLASH : 62|1@0+ (1,0) [0|1] "" XXX
+ SG_ LEFT_LANE_GREEN_FLASH : 63|1@0+ (1,0) [0|1] "" XXX
+ SG_ FOLLOW_DISTANCE : 3|2@0+ (1,0) [0|3] "" XXX
+ SG_ AUDIBLE_TONE : 47|3@0+ (1,0) [0|7] "" XXX
+ SG_ SPEED_SET_ICON : 7|2@0+ (1,0) [0|3] "" XXX
+ SG_ SMALL_STEERING_WHEEL_ICON : 42|3@0+ (1,0) [0|7] "" XXX
+ SG_ SET_SPEED : 39|8@0+ (1,0) [0|255] "" XXX
+
+BO_ 783 CRUISE_STATE: 3 XXX
+ SG_ CRUISE_ENABLED : 3|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 852 ESP: 8 XXX
  SG_ ESP_DISABLED : 38|1@0+ (1,0) [0|1] "" XXX
@@ -81,49 +139,58 @@ BO_ 856 LIGHTS: 8 XXX
  SG_ RIGHT_BLINKER : 18|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 943 HAZARD_SWITCH: 8 XXX
- SG_ HAZARD_BUTTON : 7|1@0+ (1,0) [0|1] "" XXX
+ SG_ HAZARD_BUTTON : 7|1@1+ (1,0) [0|1] "" XXX
 
 BO_ 1057 GEARBOX: 3 XXX
- SG_ GEAR_SHIFTER : 5|3@0+ (1,0) [0|255] "" XXX
+ SG_ GEAR_SHIFTER : 5|3@0+ (1,0) [0|7] "" XXX
+
+BO_ 1227 LKAS_SETTINGS: 8 XXX
+ SG_ LKAS_ENABLED : 51|1@0+ (1,0) [0|1] "" XXX
+
+BO_ 1228 PROPILOT_HUD_INFO_MSG: 8 XXX
+ SG_ NA_HIGH_ACCEL_TEMP : 0|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_RADAR_NA_HIGH_CABIN_TEMP : 8|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_RADAR_MALFUNCTION : 11|1@0+ (1,0) [0|1] "" XXX
+ SG_ LKAS_MALFUNCTION : 12|1@0+ (1,0) [0|1] "" XXX
+ SG_ FRONT_RADAR_MALFUNCTION : 13|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_RADAR_NA_CLEAN_REAR_CAMERA : 14|1@0+ (1,0) [0|1] "" XXX
+ SG_ NA_POOR_ROAD_CONDITIONS : 16|1@0+ (1,0) [0|1] "" XXX
+ SG_ CURRENTLY_UNAVAILABLE : 17|1@0+ (1,0) [0|1] "" XXX
+ SG_ SAFETY_SHIELD_OFF : 18|1@0+ (1,0) [0|1] "" XXX
+ SG_ FRONT_COLLISION_NA_FRONT_RADAR_OBSTRUCTION : 20|1@0+ (1,0) [0|1] "" XXX
+ SG_ PEDAL_MISSAPPLICATION_SYSTEM_ACTIVATED : 24|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_IMPACT_NA_RADAR_OBSTRUCTION : 25|1@0+ (1,0) [0|1] "" XXX
+ SG_ WARNING_DO_NOT_ENTER : 33|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_IMPACT_SYSTEM_OFF : 34|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_IMPACT_MALFUNCTION : 35|1@0+ (1,0) [0|1] "" XXX
+ SG_ FRONT_COLLISION_MALFUNCTION : 36|1@0+ (1,0) [0|1] "" XXX
+ SG_ SIDE_RADAR_MALFUNCTION2 : 37|1@0+ (1,0) [0|1] "" XXX
+ SG_ LKAS_MALFUNCTION2 : 38|1@0+ (1,0) [0|1] "" XXX
+ SG_ FRONT_RADAR_MALFUNCTION2 : 39|1@0+ (1,0) [0|1] "" XXX
+ SG_ PROPILOT_NA_MSGS : 42|3@0+ (1,0) [0|7] "" XXX
+ SG_ BOTTOM_MSG : 45|3@0+ (1,0) [0|7] "" XXX
+ SG_ HANDS_ON_WHEEL_WARNING : 47|1@0+ (1,0) [0|1] "" XXX
+ SG_ WARNING_STEP_ON_BRAKE_NOW : 51|1@0+ (1,0) [0|1] "" XXX
+ SG_ PROPILOT_NA_FRONT_CAMERA_OBSTRUCTED : 52|1@0+ (1,0) [0|1] "" XXX
+ SG_ PROPILOT_NA_HIGH_CABIN_TEMP : 53|1@0+ (1,0) [0|1] "" XXX
+ SG_ WARNING_PROPILOT_MALFUNCTION : 54|1@0+ (1,0) [0|1] "" XXX
+ SG_ ACC_UNAVAILABLE_HIGH_CABIN_TEMP : 62|1@0+ (1,0) [0|1] "" XXX
+ SG_ ACC_NA_FRONT_CAMERA_IMPARED : 63|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 1549 DOORS_LIGHTS: 8 XXX
  SG_ DOOR_OPEN_FL : 3|1@0+ (1,0) [0|1] "" XXX
  SG_ DOOR_OPEN_FR : 4|1@0+ (1,0) [0|1] "" XXX
  SG_ DOOR_OPEN_RL : 5|1@0+ (1,0) [0|1] "" XXX
  SG_ DOOR_OPEN_RR : 6|1@0+ (1,0) [0|1] "" XXX
- SG_ LEFT_BLINKER_60D : 13|1@0+ (1,0) [0|1] "" XXX
- SG_ RIGHT_BLINKER_60D : 14|1@0+ (1,0) [0|1] "" XXX
+ SG_ LEFT_BLINKER_60D : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ RIGHT_BLINKER_60D : 14|1@1+ (1,0) [0|1] "" XXX
 
+CM_ SG_ 389 LKAS_STATUS "EPS LKAS state.";
+VAL_ 389 LKAS_STATUS 5 "INACTIVE" 6 "ACTIVE" 9 "FAULT" ;
 VAL_ 1057 GEAR_SHIFTER 7 "B" 4 "D" 3 "N" 2 "R" 1 "P" ;
-
-CM_ BO_ 2 "Steering angle sensor. Our testing confirmed steering-angle behavior, steering-rate behavior, fixed 0x07 field, approximately 100 Hz transmission, and 4-bit rolling counter.";
-
-CM_ SG_ 2 STEER_ANGLE "Tracks physical steering-wheel position. Known Nissan scaling is 0.1 degree/count.";
-
-CM_ SG_ 2 STEER_ANGLE_RATE "Tracks steering movement rate. Slow movement produces smaller values, fast movement produces larger values, and held steering returns near zero.";
-
-CM_ SG_ 2 COUNTER "Confirmed 4-bit rolling counter. Sequence 0 through 15 then wraps to 0.";
-
-CM_ BO_ 361 "Known Nissan LKAS steering-control message. Our capture confirmed approximately 100 Hz transmission, fixed 0x80 fields, 4-bit rolling counter, and CRC-8/SAE-J1850 checksum. DESIRED_ANGLE, MAX_TORQUE, and LKA_ACTIVE are established Nissan definitions and were not independently proven by the stationary test.";
-
-CM_ SG_ 361 COUNTER "Confirmed 4-bit rolling counter. Sequence 0 through 15 then wraps to 0.";
-
-CM_ SG_ 361 CHECKSUM "Confirmed CRC-8/SAE-J1850 over data bytes 1 through 7. Polynomial 0x1D, initial value 0xFF, final XOR 0xFF. Checksum stored in byte 8.";
-
-CM_ BO_ 389 "Steering torque sensor. Our testing supports separate driver-torque and steering-angle behavior. Exact Nm and degree scaling follows the established Nissan definition.";
-
-CM_ SG_ 389 COUNTER "Confirmed 4-bit rolling counter. Sequence 0 through 15 then wraps to 0.";
-
-CM_ SG_ 389 CHECKSUM "Confirmed CRC-8/SAE-J1850 over data bytes 1 through 7. Polynomial 0x1D, initial value 0xFF, final XOR 0xFF. Checksum stored in byte 8.";
-
-CM_ BO_ 634 "Observed turn-signal state message. Byte 4 bit 0 = left, byte 4 bit 1 = right. Both active = hazard. Message observed at approximately 50 Hz and stops when vehicle is off. Captured on BUS 2 at 47.5 Hz over 50432 frames. REPORTS lamp state rather than commanding it: byte 4 toggles with the physical flash at about 1.43 Hz, and every sustained hazard period begins 20-30 ms AFTER a 0x3AF pulse. Transmitting this message is not expected to command the lamps.";
-
-CM_ SG_ 634 SET_0x4D "Constant 0x4D across all 50432 captured frames. Was missing from this DBC, so frames we packed had 0x00 here and did not match what the car sends. Must be set on transmit.";
-
-CM_ SG_ 634 COUNTER_27A "Confirmed 4-bit rolling counter in byte 6 low nibble. Sequence 0 through 15 then wraps to 0.";
-
-CM_ SG_ 634 CHECKSUM_27A "Confirmed additive checksum. Checksum = (Byte1 + Byte2 + Byte3 + Byte4 + Byte5 + Byte6 + 0x7C) & 0xFF.";
-
-CM_ BO_ 943 "Observed hazard-switch press message. Byte 1 bit 7 pulses when the physical hazard button is pressed. Same pulse occurs for hazard ON and hazard OFF. Captured on BUS 0 at 10.1 Hz; bytes 2-8 constant 0x00, no counter and no checksum. 110 pulses observed, width 0.131 s min / 0.250 s median / 0.560 s max, so a press is roughly 2-3 frames at 10 Hz. This is the COMMAND side of the hazard function: all 35 sustained hazard periods in 0x27A began 20-30 ms after a pulse here.";
-
-CM_ BO_ 1549 "Door-status message also contains turn-signal state. Byte 2 bit 5 = left, byte 2 bit 6 = right. Both active = hazard. No obvious rolling counter or checksum observed. Captured on BUS 0 at 10.3 Hz. Byte 2 toggles 0x06 <-> 0x66 in lockstep with the 0x27A flash, which confirms bits 5 and 6 as the two blinker lamps (0x20 | 0x40 = 0x60). Byte 1 went 0x98 -> 0x90 -> 0x80 early in the capture, consistent with the two front doors being closed one after the other, which supports the DOOR_OPEN_FL/FR bit assignments. Like 0x27A this message REPORTS lamp state.";
+VAL_ 1228 PROPILOT_NA_MSGS 0 "NO_MSG" 1 "NA_FRONT_CAMERA_IMPAIRED" 2 "STEERING_ASSIST_ON_STANDBY" 3 "NA_PARKING_ASSIST_ENABLED" 4 "STEER_ASSIST_CURRENTLY_NA" 5 "NA_BAD_WEATHER" 6 "NA_PARK_BRAKE_ON" 7 "NA_SEATBELT_NOT_FASTENED" ;
+VAL_ 1228 BOTTOM_MSG 0 "OK_STEER_ASSIST_SETTINGS" 1 "NO_MSG" 2 "PRESS_SET_TO_SET_SPEED" 3 "PRESS_RES_SET_TO_CHANGE_SPEED" 4 "PRESS_RES_TO_RESTART" 5 "NO_MSG" 6 "CRUISE_NOT_AVAIL" 7 "NO_MSG" ;
+VAL_ 689 FOLLOW_DISTANCE 0 "NO_FOLLOW_DISTANCE" 1 "FOLLOW_DISTANCE_1" 2 "FOLLOW_DISTANCE_2" 3 "FOLLOW_DISTANCE_3" ;
+VAL_ 689 AUDIBLE_TONE 0 "NO_TONE" 1 "CONT" 2 "FAST_BEEP_CONT" 3 "TRIPLE_FAST_BEEP_CONT" 4 "SLOW_BEEP_CONT" 5 "QUAD_SLOW_BEEP_CONT" 6 "SINGLE_BEEP_ONCE" 7 "DOUBLE_BEEP_ONCE" ;
+VAL_ 689 SMALL_STEERING_WHEEL_ICON 0 "NO_ICON" 1 "GRAY_ICON" 2 "GRAY_ICON_FLASHING" 3 "GREEN_ICON" 4 "GREEN_ICON_FLASHING" 5 "RED_ICON" 6 "RED_ICON_FLASHING" 7 "YELLOW_ICON" ;
+VAL_ 689 LARGE_STEERING_WHEEL_ICON 0 "NO_STEERINGWHEEL" 1 "GRAY_STEERINGWHEEL" 2 "GREEN_STEERINGWHEEL" 3 "GREEN_STEERINGWHEEL_FLASHING" ;
