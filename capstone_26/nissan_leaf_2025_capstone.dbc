@@ -1,4 +1,4 @@
-VERSION "Nissan Leaf 2018 combined DBC"
+VERSION "Nissan Leaf 2025 capstone DBC"
 
 NS_ :
  NS_DESC_
@@ -82,6 +82,7 @@ BO_ 569 CRUISE_THROTTLE: 8 XXX
  SG_ COUNTER : 32|2@1+ (1,0) [0|3] "" XXX
 
 BO_ 634 TURN_SIGNALS_27A: 7 XXX
+ SG_ SET_0x4D : 23|8@0+ (1,0) [0|255] "" XXX
  SG_ LEFT_BLINKER_27A : 24|1@1+ (1,0) [0|1] "" XXX
  SG_ RIGHT_BLINKER_27A : 25|1@1+ (1,0) [0|1] "" XXX
  SG_ COUNTER_27A : 40|4@1+ (1,0) [0|15] "" XXX
@@ -194,3 +195,12 @@ VAL_ 689 FOLLOW_DISTANCE 0 "NO_FOLLOW_DISTANCE" 1 "FOLLOW_DISTANCE_1" 2 "FOLLOW_
 VAL_ 689 AUDIBLE_TONE 0 "NO_TONE" 1 "CONT" 2 "FAST_BEEP_CONT" 3 "TRIPLE_FAST_BEEP_CONT" 4 "SLOW_BEEP_CONT" 5 "QUAD_SLOW_BEEP_CONT" 6 "SINGLE_BEEP_ONCE" 7 "DOUBLE_BEEP_ONCE" ;
 VAL_ 689 SMALL_STEERING_WHEEL_ICON 0 "NO_ICON" 1 "GRAY_ICON" 2 "GRAY_ICON_FLASHING" 3 "GREEN_ICON" 4 "GREEN_ICON_FLASHING" 5 "RED_ICON" 6 "RED_ICON_FLASHING" 7 "YELLOW_ICON" ;
 VAL_ 689 LARGE_STEERING_WHEEL_ICON 0 "NO_STEERINGWHEEL" 1 "GRAY_STEERINGWHEEL" 2 "GREEN_STEERINGWHEEL" 3 "GREEN_STEERINGWHEEL_FLASHING" ;
+
+CM_ BO_ 2 "Steering angle sensor. Our testing confirmed steering-angle behavior, steering-rate behavior, fixed 0x07 field, approximately 100 Hz transmission, and 4-bit rolling counter.";
+CM_ BO_ 361 "Nissan LKAS steering-control message. NOT seen in any of our captures - we have not confirmed this car transmits it, or on which bus. LKAS_BUS in manual_nissancan.py is a placeholder until we capture it.";
+CM_ BO_ 634 "Observed turn-signal state message. Captured on BUS 2 at 47.5 Hz over 50432 frames. REPORTS lamp state rather than commanding it: byte 4 toggles with the physical flash at about 1.43 Hz, and every sustained hazard period begins 20-30 ms AFTER a 0x3AF pulse. Transmitting this message is not expected to command the lamps.";
+CM_ SG_ 634 SET_0x4D "Constant 0x4D across all 50432 captured frames. Must be set on transmit or our frames do not match what the car sends.";
+CM_ SG_ 634 COUNTER_27A "Confirmed 4-bit rolling counter in byte 6 low nibble. Sequence 0 through 15 then wraps to 0.";
+CM_ SG_ 634 CHECKSUM_27A "Confirmed additive checksum. Checksum = (Byte1 + Byte2 + Byte3 + Byte4 + Byte5 + Byte6 + 0x7C) & 0xFF.";
+CM_ BO_ 943 "Observed hazard-switch press message. Captured on BUS 0 at 10.1 Hz; bytes 2-8 constant 0x00, no counter and no checksum. 110 pulses observed, width 0.131 s min / 0.250 s median / 0.560 s max, so a press is roughly 2-3 frames at 10 Hz. This is the COMMAND side of the hazard function: all 35 sustained hazard periods in 0x27A began 20-30 ms after a pulse here.";
+CM_ BO_ 1549 "Door-status message also contains turn-signal state. Captured on BUS 0 at 10.3 Hz. Byte 2 toggles 0x06 <-> 0x66 in lockstep with the 0x27A flash, which confirms bits 5 and 6 as the two blinker lamps. Like 0x27A this message REPORTS lamp state.";
