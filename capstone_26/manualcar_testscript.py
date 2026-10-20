@@ -72,14 +72,19 @@ def hazard_menu(car):
 
   choice = input("Enter command: ").strip()
 
-  if choice == "1":
-    car.hazards_press()
-  elif choice == "2":
-    car.hazards_release()
+  if choice == "1" or choice == "2":
+    # CHANGED (Saul) - these sent one frame each. Our capture shows a real
+    # press is 2-3 frames at 10 Hz, and the same pulse serves ON and OFF,
+    # so both options now send a proper pulse and the hazards toggle.
+    width = car.hazard_pulse()
+    print(f"pulsed 0x3AF for {width:.3f} s - hazards should TOGGLE")
+
   elif choice == "3":
     car.hazards_27a_ON()
+
   elif choice == "4":
     car.hazards_27a_OFF()
+
   else:
     print("Command not found")
 
