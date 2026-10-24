@@ -27,7 +27,7 @@ MAX_ANGLE = 600.0
 # in CANInterface.print_health() before trusting these.
 TURN_SIGNAL_BUS = 2
 HAZARD_SWITCH_BUS = 0
-LKAS_BUS = 0            # unverified - 0x169 does not appear in our captures
+LKAS_BUS = 0
 
 # 0x3AF pulse shape measured from 110 real button presses:
 # 0.131 s min, 0.250 s median, 0.560 s max, at a 10 Hz message rate.
@@ -180,7 +180,3 @@ class CarController_Manual():
     return self.packer.make_can_msg(
       "HAZARD_SWITCH", bus, {"HAZARD_BUTTON": 1 if enabled else 0}
     )
-
-  # ADDED (steering) - LKAS_BUS is a placeholder. 0x169 is absent from every
-  # capture we have, so we have not confirmed the camera transmits it on this
-  # car, let alone on which bus. Capture it before trusting create_steering_control.
