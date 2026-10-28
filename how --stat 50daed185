@@ -1,0 +1,8 @@
+[33m50daed185[m capstone_26: bring-up, probe and port-validation scripts
+[33md6deb1e6e[m Update manual CAN controls and Nissan 2025 DBC
+[33mbda2b687d[m[33m ([m[1;32mmaster[m[33m, [m[1;32mcapstone-can-fixes[m[33m)[m Merge master into roque-dev and resolve CAN interface conflict
+[33mba648c385[m Update manual CAN interface
+[33mf5941a997[m Add C array export for ESP32
+[33mfb86f4aa5[m Update manual_can_interface.py
+[33m93696c3ec[m Update manual CAN interface and test script
+[33mcff338421[m Added new manual Nissan Can functions
