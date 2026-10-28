@@ -6,7 +6,8 @@ import threading
 
 class CANInterface:
 
-    def __init__(self, simulation=True, allow_output=True):
+    def __init__(self, simulation=True, allow_output=False):
+        self.allow_output = allow_output
         self.simulation = simulation
 
         self.panda = None  #only connect when actually using Panda
@@ -20,39 +21,16 @@ class CANInterface:
         if not self.simulation:
             # import here so simulation mode works on a machine with no panda
             from panda import Panda
-            # CHANGED - Panda.SAFETY_ALLOUTPUT does not exist in the panda
-            # version this repo pins. set_safety_mode takes a capnp enum.
-            from opendbc.car.structs import CarParams
 
-            # On a comma device the panda is internal and reached over SPI;
-            # Panda() tries USB first and falls back to SPI automatically, so
-            # this same call works on a laptop and on the device. But pandad
-            # holds the handle while openpilot is running - stop openpilot
-            # first or this raises.
             self.panda = Panda()
 
-            # ADDED - THE OTHER ONE THAT WOULD HAVE BITTEN US.
-            # The panda expects a heartbeat from openpilot. With no heartbeat
-            # it raises HEARTBEAT_LOST and stops transmitting after a few
-            # seconds. We are not openpilot, so turn the check off. Note that
-            # sending any heartbeat re-enables it.
-            self.panda.set_heartbeat_disabled()
+            #self.panda.set_heartbeat_disabled()
 
-            # ADDED - THIS IS THE ONE THAT BIT US.
-            # Panda boots in SAFETY_SILENT. In that mode can_send() returns
-            # normally but the panda drops every frame on the floor, so the
-            # whole stack looked like it was working and nothing reached the
-            # bus. ALLOUTPUT disables the safety model entirely and lets us
-            # transmit arbitrary IDs, which is what we need for bring-up.
-            #
-            # ALLOUTPUT means there is nothing between this script and the
-            # vehicle bus. Wheels chocked, car in park, know what you are
-            # sending before you start the tx loop.
-            mode = (CarParams.SafetyModel.allOutput if allow_output
-                    else CarParams.SafetyModel.silent)
-            self.panda.set_safety_mode(mode)
+            #mode = (CarParams.SafetyModel.allOutput if allow_output
+                    #else CarParams.SafetyModel.silent)
+            #self.panda.set_safety_mode(mode)
 
-            self.print_health(expect_mode=int(mode))
+            self.print_health()
 
     # ADDED - read the panda back instead of assuming the writes landed.
     # Run this before anything else on the car.
@@ -84,8 +62,9 @@ class CANInterface:
             print("!! harness not detected. With no harness the panda cannot")
             print("   map buses to the car; nothing you send will go anywhere.")
         if h.get("heartbeat_lost"):
-            print("!! heartbeat was lost at some point. set_heartbeat_disabled()")
-            print("   should prevent this; check nothing else is driving the panda.")
+            print("!! Panda reports heartbeat lost.")
+            print("   Check the normal openpilot/Panda connection.")
+
 
     # ADDED - open the harness relay to isolate the ADAS camera from the bus.
     #
@@ -95,12 +74,20 @@ class CANInterface:
     # Opening the relay takes the camera off the car-side bus.
     #
     # This disables ProPILOT while it is open. Know that before you flip it.
+
+
     def set_relay(self, intercept):
-        if self.panda is None:
-            print(f"simulation mode, relay {'open' if intercept else 'closed'} noted")
+        if not self.allow_output:
+            raise RuntimeError("Relay control disabled")
+
+        if self.simulation:
+            print(f"Simulation: relay {'open' if intercept else 'closed'}")
             return
-        self.panda.force_relay_drive(bool(intercept), False)
-        print(f"harness intercept relay -> {'OPEN (camera isolated)' if intercept else 'closed (stock)'}")
+
+        raise RuntimeError(
+            "Live relay control disabled pending vehicle safety validation"
+        )
+
 
     # ADDED - prints a frame the way Cabana shows it, hex ID and hex bytes.
     # Raw print gives a tuple of ints, which is hard to compare against Cabana.
@@ -115,6 +102,9 @@ class CANInterface:
         )
 
     def send(self, message, verbose=True):
+        if not self.simulation and not self.allow_output:
+            raise RuntimeError("CAN transmission disabled")
+
         if message is None:
             raise ValueError("Failed to send empty CAN")
 
