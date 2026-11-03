@@ -27,7 +27,7 @@ MAX_ANGLE = 600.0
 # in CANInterface.print_health() before trusting these.
 TURN_SIGNAL_BUS = 2
 HAZARD_SWITCH_BUS = 0
-LKAS_BUS = 0
+LKAS_BUS = 2
 
 # 0x3AF pulse shape measured from 110 real button presses:
 # 0.131 s min, 0.250 s median, 0.560 s max, at a 10 Hz message rate.
