@@ -1,4 +1,4 @@
-VERSION "Nissan Leaf 2025 capstone - observed receive signals - rev 2026-11-04"
+VERSION "Nissan Leaf 2025 capstone - passive decoding - rev 2026-11-05"
 
 NS_ :
  NS_DESC_
@@ -64,47 +64,20 @@ BO_ 389 STEER_TORQUE_SENSOR: 8 XXX
 BO_ 451 PROPILOT_BRAKE: 8 XXX
  SG_ BRAKE_PRESSURE : 5|9@0+ (1,0) [0|511] "" XXX
  SG_ BRAKE_ACTIVE : 47|1@0+ (1,0) [0|1] "" XXX
+ SG_ OBS_BRAKE_STATE_B6_BIT2 : 42|1@1+ (1,0) [0|1] "" XXX
+ SG_ OBS_COUNTER_B6_BITS0_1 : 40|2@1+ (1,0) [0|3] "" XXX
+ SG_ OBS_CHECKSUM_B8 : 56|8@1+ (1,0) [0|255] "" XXX
 
 BO_ 459 OBS_BRAKE_ASSOC_1CB: 7 XXX
  SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_B2_BITS0_4 : 8|5@1+ (1,0) [0|31] "" XXX
+ SG_ OBS_AUTO_BRAKE_ASSOC_B2_BIT5 : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_B2_BITS6_7 : 14|2@1+ (1,0) [0|3] "" XXX
  SG_ OBS_BRAKE_CORRELATED_B3_RAW : 16|8@1+ (1,0) [0|255] "" XXX
  SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
  SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
  SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
  SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
-
-BO_ 682 OBS_BRAKE_ASSOC_2AA: 8 XXX
- SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
- SG_ OBS_BRAKE_CORRELATED_B2_RAW : 8|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_3 : 16|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
- SG_ OBS_BRAKE_CORRELATED_B6_RAW : 40|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
-
-BO_ 688 OBS_BRAKE_ASSOC_2B0: 8 XXX
- SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_3 : 16|8@1+ (1,0) [0|255] "" XXX
- SG_ OBS_BRAKE_CORRELATED_B4_RAW : 24|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
-
-BO_ 861 OBS_BRAKE_ASSOC_35D: 8 XXX
- SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_3 : 16|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_B5_BITS0_3 : 32|4@1+ (1,0) [0|15] "" XXX
- SG_ OBS_BRAKE_CORRELATED_B5_BIT4 : 36|1@1+ (1,0) [0|1] "" XXX
- SG_ RAW_B5_BITS5_7 : 37|3@1+ (1,0) [0|7] "" XXX
- SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
- SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
 
 BO_ 460 BRAKE_PEDAL: 4 XXX
  SG_ BRAKE_PEDAL : 7|8@0+ (1,0) [0|255] "" XXX
@@ -141,8 +114,41 @@ BO_ 645 WHEEL_SPEEDS_REAR: 8 XXX
  SG_ WHEEL_SPEED_RR : 7|16@0+ (0.005,0) [0|327.675] "KPH" XXX
  SG_ WHEEL_SPEED_RL : 23|16@0+ (0.005,0) [0|327.675] "KPH" XXX
 
+BO_ 654 OBS_AUTO_BRAKE_ASSOC_28E: 6 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_B3_BITS1_7 : 17|7@1+ (1,0) [0|127] "" XXX
+ SG_ OBS_AUTO_BRAKE_ASSOC_B3_BIT0 : 16|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
+
 BO_ 658 ACCEL: 8 XXX
  SG_ ROUGH_ACCEL : 7|16@0+ (0.0005,-16.5) [-16.5|16.27] "m/s^2" XXX
+
+BO_ 682 OBS_BRAKE_ASSOC_2AA: 8 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B2_RAW : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_B3_BITS0_4 : 16|5@1+ (1,0) [0|31] "" XXX
+ SG_ OBS_AUTO_BRAKE_ASSOC_B3_BIT5 : 21|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_B3_BITS6_7 : 22|2@1+ (1,0) [0|3] "" XXX
+ SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B6_RAW : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 688 OBS_BRAKE_ASSOC_2B0: 8 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_B3_BITS0_5 : 16|6@1+ (1,0) [0|63] "" XXX
+ SG_ OBS_AUTO_BRAKE_ASSOC_B3_BIT6 : 22|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_B3_BIT7 : 23|1@1+ (1,0) [0|1] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B4_RAW : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
 
 BO_ 689 PROPILOT_HUD: 8 XXX
  SG_ LARGE_WARNING_FLASHING : 9|1@0+ (1,0) [0|1] "" XXX
@@ -168,6 +174,12 @@ BO_ 689 PROPILOT_HUD: 8 XXX
  SG_ SMALL_STEERING_WHEEL_ICON : 42|3@0+ (1,0) [0|7] "" XXX
  SG_ SET_SPEED : 39|8@0+ (1,0) [0|255] "" XXX
 
+BO_ 761 OBS_AUTO_BRAKE_ASSOC_2F9: 2 XXX
+ SG_ RAW_B1_BITS0_5 : 0|6@1+ (1,0) [0|63] "" XXX
+ SG_ OBS_AUTO_BRAKE_INVERSE_B1_BIT6 : 6|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_B1_BIT7 : 7|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+
 BO_ 783 CRUISE_STATE: 3 XXX
  SG_ CRUISE_ENABLED : 3|1@0+ (1,0) [0|1] "" XXX
 
@@ -181,6 +193,18 @@ BO_ 853 HUD_SETTINGS: 8 XXX
 BO_ 856 LIGHTS: 8 XXX
  SG_ LEFT_BLINKER : 17|1@0+ (1,0) [0|1] "" XXX
  SG_ RIGHT_BLINKER : 18|1@0+ (1,0) [0|1] "" XXX
+
+BO_ 861 OBS_BRAKE_ASSOC_35D: 8 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_3 : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_B5_BITS0_3 : 32|4@1+ (1,0) [0|15] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B5_BIT4 : 36|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_B5_BITS5_7 : 37|3@1+ (1,0) [0|7] "" XXX
+ SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
 
 BO_ 943 HAZARD_SWITCH: 8 XXX
  SG_ HAZARD_BUTTON : 7|1@1+ (1,0) [0|1] "" XXX
@@ -241,19 +265,32 @@ VAL_ 689 LARGE_STEERING_WHEEL_ICON 0 "NO_STEERINGWHEEL" 1 "GRAY_STEERINGWHEEL" 2
 
 CM_ BO_ 2 "Steering angle sensor. Our testing confirmed steering-angle behavior, steering-rate behavior, fixed 0x07 field, approximately 100 Hz transmission, and 4-bit rolling counter.";
 CM_ BO_ 361 "Existing Nissan LKAS definition. Passive recording cabana_data.csv contains 149340 instances of 0x169, half each on bus 0 and bus 2. Presence and DLC=8 confirmed; signal meanings and command acceptance not independently verified by this recording. Do not infer transmit permissions or actuation.";
-CM_ SG_ 634 SET_0x4D "Constant 0x4D across all 50432 captured frames. Must be set on transmit or our frames do not match what the car sends.";
+CM_ SG_ 634 SET_0x4D "Observed constant 0x4D in prior recording; not an instruction to transmit.";
 CM_ SG_ 634 COUNTER_27A "Confirmed 4-bit rolling counter in byte 6 low nibble. Sequence 0 through 15 then wraps to 0.";
 CM_ SG_ 634 CHECKSUM_27A "Confirmed additive checksum. Checksum = (Byte1 + Byte2 + Byte3 + Byte4 + Byte5 + Byte6 + 0x7C) & 0xFF.";
-CM_ BO_ 943 "Observed hazard-switch press message. Captured on BUS 0 at 10.1 Hz; bytes 2-8 constant 0x00, no counter and no checksum. 110 pulses observed, width 0.131 s min / 0.250 s median / 0.560 s max, so a press is roughly 2-3 frames at 10 Hz. This is the COMMAND side of the hazard function: all 35 sustained hazard periods in 0x27A began 20-30 ms after a pulse here.";
+CM_ BO_ 943 "Observed hazard switch input indication; pulses were followed by reported hazard-lamp activity. This does not establish a CAN actuator command or external transmit permission.";
 CM_ BO_ 1549 "Door-status message also contains turn-signal state. Captured on BUS 0 at 10.3 Hz. Byte 2 toggles 0x06 <-> 0x66 in lockstep with the 0x27A flash, which confirms bits 5 and 6 as the two blinker lamps. Like 0x27A this message REPORTS lamp state.";
 
-CM_ BO_ 460 "DLC corrected from 8 to 4 based on all 149436 observed frames across buses 0 and 2. First payload byte correlates with physical brake pedal input; units not independently calibrated. Decoding only.";
-CM_ BO_ 451 "Existing name PROPILOT_BRAKE is inherited from upstream DBC; stationary test with ProPILOT off did not validate it as an actionable brake request. Decoding only.";
-CM_ BO_ 459 "Passive observations: seven-byte CAN ID 0x1CB on buses 0 and 2. Raw byte 3 correlated with observed pedal readings (approx r=0.91 on test window). Other bytes intentionally undocumented; no control claim.";
-CM_ BO_ 682 "Passive observations: eight-byte 0x2AA. Byte 2 changed from typical 0x0A released to 0x16 pressed; byte 6 correlated with pedal readings (approx r=0.91). Names mark observations only, not verified pressure or control fields.";
-CM_ BO_ 688 "Passive observations: eight-byte 0x2B0 on bus 1. Byte 4 generally changed 0x8C released / 0x4C pressed in the test window. No validated meaning or command usage.";
+CM_ BO_ 460 "Observed 4-byte payload on buses 0 and 2. Raw BRAKE_PEDAL-named field changes during manual AND factory automatic braking; not a driver-only pedal measurement; units uncalibrated. Receive-only.";
+CM_ BO_ 451 "Observed on Panda bus 1, 8-byte payload approximately 100 Hz during one drive; six factory-braking-associated episodes. Existing BRAKE_PRESSURE (raw uncalibrated magnitude) and BRAKE_ACTIVE change during episodes. Byte6 bits0-1 form modulo-4 counter; Byte6 bit2 is additional brake-correlated state; Byte8 is an additive integrity byte matched in 263475/263475 captured frames. ECU transmitter, request vs feedback, physical units, and actuation capability remain UNVERIFIED. RECEIVE/DECODE ONLY.";
 CM_ BO_ 861 "Passive observations: eight-byte 0x35D on buses 0 and 2. Byte 5 bit 4 associated with brake-pedal state (about 98 percent when BRAKE_PEDAL at least 10 in sampled test window). No actuation meaning established.";
 CM_ SG_ 634 OBS_BRAKE_CORRELATED_B4_BIT5 "Passive association with brake presses in Nov 2026 Park test; does not imply the 0x27A turn-signal status message controls braking.";
 CM_ SG_ 852 OBS_BRAKE_CORRELATED_B7_BIT4 "Passive association with brake presses in Nov 2026 Park test. Correlation only; not proven brake-switch or control signal.";
 CM_ SG_ 861 OBS_BRAKE_CORRELATED_B5_BIT4 "Passive association with brake presses in Nov 2026 Park test. Correlation only; not proven brake-switch or control signal.";
 CM_ BO_ 634 "Turn-signal and brake-correlated status observations share the same CAN payload. This message was observed on bus 0 and 2 in the Nov 2026 recording. Its fields are state/observation definitions, NOT validated actuation commands.";
+CM_ SG_ 451 BRAKE_PRESSURE "Existing 9-bit field, raw scale 1; 0-364 observed in recorded factory brake events; physical pressure units and request-vs-feedback meaning not verified.";
+CM_ SG_ 451 BRAKE_ACTIVE "Existing one-bit field, observed asserted with nonzero magnitude during factory braking; not proof this bit commands the brakes.";
+CM_ SG_ 451 OBS_BRAKE_STATE_B6_BIT2 "Byte 6 bit 2. Observed asserted in 3586 frames, including 621 without brake-active bit; state meaning unknown.";
+CM_ SG_ 451 OBS_COUNTER_B6_BITS0_1 "Byte 6 low two bits cycle 0,1,2,3; 99.998 percent of transitions consistent with rolling count. Receive-side observation only.";
+CM_ SG_ 451 OBS_CHECKSUM_B8 "Last-byte additive integrity relationship observed in all 263475 raw frames. Not a validated transmission interface.";
+CM_ BO_ 654 "New read-only definition for CAN ID 0x28E on Panda bus 1; DLC 6. Byte 3 bit 0 was asserted in about 97.1 percent of factory-braking-active 0.2-second bins and 0 percent inactive bins in one analysis window. Correlation, not identified control.";
+CM_ BO_ 761 "New read-only definition for CAN ID 0x2F9 on buses 0 and 2; DLC 2. Byte 1 bit 6 mostly CLEARS during factory-braking-active intervals (5.4 percent active vs 98.3 percent inactive). Correlation, not identified control.";
+CM_ SG_ 459 OBS_AUTO_BRAKE_ASSOC_B2_BIT5 "Byte 2 bit 5: 81.8 percent braking-active vs 4.5 percent inactive sampled bins; tentative association only.";
+CM_ SG_ 682 OBS_AUTO_BRAKE_ASSOC_B3_BIT5 "Byte 3 bit 5: 97.1 percent braking-active vs 0 percent inactive sampled bins. Tentative state, not request.";
+CM_ SG_ 688 OBS_AUTO_BRAKE_ASSOC_B3_BIT6 "Byte 3 bit 6: 94.6 percent braking-active vs 1.7 percent inactive sampled bins. Tentative state, not request.";
+CM_ SG_ 654 OBS_AUTO_BRAKE_ASSOC_B3_BIT0 "Byte 3 bit 0: 97.1 percent braking-active vs 0 percent inactive sampled bins. Tentative state, not request.";
+CM_ SG_ 761 OBS_AUTO_BRAKE_INVERSE_B1_BIT6 "Byte 1 bit 6: 5.4 percent braking-active vs 98.3 percent inactive sampled bins; inverse association, unknown physical meaning.";
+CM_ BO_ 569 "Existing cruise and pedal-related definitions. USER_BRAKE_PRESSED remained 0 in sampled factory-automatic-braking intervals, useful distinction from BRAKE_PEDAL-named 0x1CC field. Check per model-year before safety-critical use.";
+CM_ BO_ 682 "Observed on buses 0 and 2, 8 bytes. Existing raw-byte observations retained; Byte 3 bit 5 tracks factory brake episodes; magnitude in Bytes 1-2 strongly correlated with 0x1C3 (r about 0.998 during braking intervals), but signal boundaries, source, units and request-vs-feedback remain unknown. Receive-only.";
+CM_ BO_ 688 "Observed on bus 1, 8 bytes. Existing raw-byte observations retained; Byte 3 bit 6 tracks factory brake episodes. Source, meaning and request-vs-feedback unknown. Receive-only.";
+CM_ BO_ 459 "Observed on buses 0 and 2, 7 bytes. Existing raw-byte observations retained; Byte 2 bit 5 moderately tracks factory brake episodes and Byte 3 previously correlated with manual pedal inputs. Receive-only.";
