@@ -1,4 +1,4 @@
-VERSION "Nissan Leaf 2025 capstone DBC"
+VERSION "Nissan Leaf 2025 capstone - observed receive signals - rev 2026-11-04"
 
 NS_ :
  NS_DESC_
@@ -65,7 +65,48 @@ BO_ 451 PROPILOT_BRAKE: 8 XXX
  SG_ BRAKE_PRESSURE : 5|9@0+ (1,0) [0|511] "" XXX
  SG_ BRAKE_ACTIVE : 47|1@0+ (1,0) [0|1] "" XXX
 
-BO_ 460 BRAKE_PEDAL: 8 XXX
+BO_ 459 OBS_BRAKE_ASSOC_1CB: 7 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B3_RAW : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 682 OBS_BRAKE_ASSOC_2AA: 8 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B2_RAW : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_3 : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B6_RAW : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 688 OBS_BRAKE_ASSOC_2B0: 8 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_3 : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B4_RAW : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_5 : 32|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 861 OBS_BRAKE_ASSOC_35D: 8 XXX
+ SG_ RAW_BYTE_1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_2 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_3 : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_4 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_B5_BITS0_3 : 32|4@1+ (1,0) [0|15] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B5_BIT4 : 36|1@1+ (1,0) [0|1] "" XXX
+ SG_ RAW_B5_BITS5_7 : 37|3@1+ (1,0) [0|7] "" XXX
+ SG_ RAW_BYTE_6 : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_7 : 48|8@1+ (1,0) [0|255] "" XXX
+ SG_ RAW_BYTE_8 : 56|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 460 BRAKE_PEDAL: 4 XXX
  SG_ BRAKE_PEDAL : 7|8@0+ (1,0) [0|255] "" XXX
 
 BO_ 569 CRUISE_THROTTLE: 8 XXX
@@ -85,6 +126,7 @@ BO_ 634 TURN_SIGNALS_27A: 7 XXX
  SG_ SET_0x4D : 23|8@0+ (1,0) [0|255] "" XXX
  SG_ LEFT_BLINKER_27A : 24|1@1+ (1,0) [0|1] "" XXX
  SG_ RIGHT_BLINKER_27A : 25|1@1+ (1,0) [0|1] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B4_BIT5 : 29|1@1+ (1,0) [0|1] "" XXX
  SG_ COUNTER_27A : 40|4@1+ (1,0) [0|15] "" XXX
  SG_ CHECKSUM_27A : 48|8@1+ (1,0) [0|255] "" XXX
 
@@ -131,6 +173,7 @@ BO_ 783 CRUISE_STATE: 3 XXX
 
 BO_ 852 ESP: 8 XXX
  SG_ ESP_DISABLED : 38|1@0+ (1,0) [0|1] "" XXX
+ SG_ OBS_BRAKE_CORRELATED_B7_BIT4 : 52|1@1+ (1,0) [0|1] "" XXX
 
 BO_ 853 HUD_SETTINGS: 8 XXX
  SG_ SPEED_MPH : 37|1@0+ (1,0) [0|1] "" XXX
@@ -197,10 +240,20 @@ VAL_ 689 SMALL_STEERING_WHEEL_ICON 0 "NO_ICON" 1 "GRAY_ICON" 2 "GRAY_ICON_FLASHI
 VAL_ 689 LARGE_STEERING_WHEEL_ICON 0 "NO_STEERINGWHEEL" 1 "GRAY_STEERINGWHEEL" 2 "GREEN_STEERINGWHEEL" 3 "GREEN_STEERINGWHEEL_FLASHING" ;
 
 CM_ BO_ 2 "Steering angle sensor. Our testing confirmed steering-angle behavior, steering-rate behavior, fixed 0x07 field, approximately 100 Hz transmission, and 4-bit rolling counter.";
-CM_ BO_ 361 "Nissan LKAS steering-control message. NOT seen in any of our captures - we have not confirmed this car transmits it, or on which bus. LKAS_BUS in manual_nissancan.py is a placeholder until we capture it.";
-CM_ BO_ 634 "Observed turn-signal state message. Captured on BUS 2 at 47.5 Hz over 50432 frames. REPORTS lamp state rather than commanding it: byte 4 toggles with the physical flash at about 1.43 Hz, and every sustained hazard period begins 20-30 ms AFTER a 0x3AF pulse. Transmitting this message is not expected to command the lamps.";
+CM_ BO_ 361 "Existing Nissan LKAS definition. Passive recording cabana_data.csv contains 149340 instances of 0x169, half each on bus 0 and bus 2. Presence and DLC=8 confirmed; signal meanings and command acceptance not independently verified by this recording. Do not infer transmit permissions or actuation.";
 CM_ SG_ 634 SET_0x4D "Constant 0x4D across all 50432 captured frames. Must be set on transmit or our frames do not match what the car sends.";
 CM_ SG_ 634 COUNTER_27A "Confirmed 4-bit rolling counter in byte 6 low nibble. Sequence 0 through 15 then wraps to 0.";
 CM_ SG_ 634 CHECKSUM_27A "Confirmed additive checksum. Checksum = (Byte1 + Byte2 + Byte3 + Byte4 + Byte5 + Byte6 + 0x7C) & 0xFF.";
 CM_ BO_ 943 "Observed hazard-switch press message. Captured on BUS 0 at 10.1 Hz; bytes 2-8 constant 0x00, no counter and no checksum. 110 pulses observed, width 0.131 s min / 0.250 s median / 0.560 s max, so a press is roughly 2-3 frames at 10 Hz. This is the COMMAND side of the hazard function: all 35 sustained hazard periods in 0x27A began 20-30 ms after a pulse here.";
 CM_ BO_ 1549 "Door-status message also contains turn-signal state. Captured on BUS 0 at 10.3 Hz. Byte 2 toggles 0x06 <-> 0x66 in lockstep with the 0x27A flash, which confirms bits 5 and 6 as the two blinker lamps. Like 0x27A this message REPORTS lamp state.";
+
+CM_ BO_ 460 "DLC corrected from 8 to 4 based on all 149436 observed frames across buses 0 and 2. First payload byte correlates with physical brake pedal input; units not independently calibrated. Decoding only.";
+CM_ BO_ 451 "Existing name PROPILOT_BRAKE is inherited from upstream DBC; stationary test with ProPILOT off did not validate it as an actionable brake request. Decoding only.";
+CM_ BO_ 459 "Passive observations: seven-byte CAN ID 0x1CB on buses 0 and 2. Raw byte 3 correlated with observed pedal readings (approx r=0.91 on test window). Other bytes intentionally undocumented; no control claim.";
+CM_ BO_ 682 "Passive observations: eight-byte 0x2AA. Byte 2 changed from typical 0x0A released to 0x16 pressed; byte 6 correlated with pedal readings (approx r=0.91). Names mark observations only, not verified pressure or control fields.";
+CM_ BO_ 688 "Passive observations: eight-byte 0x2B0 on bus 1. Byte 4 generally changed 0x8C released / 0x4C pressed in the test window. No validated meaning or command usage.";
+CM_ BO_ 861 "Passive observations: eight-byte 0x35D on buses 0 and 2. Byte 5 bit 4 associated with brake-pedal state (about 98 percent when BRAKE_PEDAL at least 10 in sampled test window). No actuation meaning established.";
+CM_ SG_ 634 OBS_BRAKE_CORRELATED_B4_BIT5 "Passive association with brake presses in Nov 2026 Park test; does not imply the 0x27A turn-signal status message controls braking.";
+CM_ SG_ 852 OBS_BRAKE_CORRELATED_B7_BIT4 "Passive association with brake presses in Nov 2026 Park test. Correlation only; not proven brake-switch or control signal.";
+CM_ SG_ 861 OBS_BRAKE_CORRELATED_B5_BIT4 "Passive association with brake presses in Nov 2026 Park test. Correlation only; not proven brake-switch or control signal.";
+CM_ BO_ 634 "Turn-signal and brake-correlated status observations share the same CAN payload. This message was observed on bus 0 and 2 in the Nov 2026 recording. Its fields are state/observation definitions, NOT validated actuation commands.";
